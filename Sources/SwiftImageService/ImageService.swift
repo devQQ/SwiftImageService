@@ -13,7 +13,11 @@ public class ImageService {
     public static let shared = ImageService()
     
     public func fetchImage(url: String) -> AnyPublisher<UIImage?, Never> {
-        return URLSession.shared.dataTaskPublisher(for: URL(string: url)!)
+        guard let imgURL = URL(string: url) else {
+            return Just(nil).eraseToAnyPublisher()
+        }
+        
+        return URLSession.shared.dataTaskPublisher(for: imgURL)
             .tryMap { (data, response) -> UIImage? in
                 UIImage(data: data)
         }
